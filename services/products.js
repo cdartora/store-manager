@@ -10,8 +10,16 @@ const getAll = async () => {
   }
 };
 
-const getProduct = async (_id) => {
+const getProduct = async (id) => {
+  if (typeof id < 0) return null;
 
+  try {
+    const response = await productsModels.getProduct(id);
+    return response;
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
+  }
 };
 
 module.exports = {

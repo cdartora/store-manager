@@ -11,9 +11,9 @@ app.get('/', (_request, response) => {
   response.send();
 });
 
-const productsRouter = require('./routes/productsRouter');
-
+// PRODUCTS
 app.get('/products', productsController.getAll);
+app.get('/products/:id', productsController.getProduct);
 
 app.listen(process.env.PORT, () => {
   console.log(`Escutando na porta ${process.env.PORT}`);

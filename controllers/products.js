@@ -10,8 +10,17 @@ const getAll = async (_req, res) => {
   }
 };
 
-const getProduct = async (_req, _res) => {
+const getProduct = async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const product = await productsServices.getProduct(id);
+    if (!product) res.status(404).send({ message: 'Product not found' });
+    res.status(200).json(product);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send({ message: 'Ops! Something went bad...' });
+  }
 };
 
 module.exports = {
