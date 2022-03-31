@@ -15,6 +15,7 @@ const getProduct = async (id) => {
 
   try {
     const response = await productsModels.getProduct(id);
+    if (!response) throw new Error();
     return response;
   } catch (err) {
     console.error(err.message);
