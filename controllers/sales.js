@@ -21,7 +21,17 @@ const getSale = async (req, res) => {
   }
 };
 
+const create = async (req, res) => {
+
+};
+
+const update = async (req, res) => {
+
+};
+
 module.exports = {
   getAll,
   getSale,
+  create,
+  update,
 };

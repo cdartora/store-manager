@@ -2,7 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const productsController = require('./controllers/products');
+const productsMiddleware = require('./middlewares/products');
 const salesController = require('./controllers/sales');
+const salesMiddleware = require('./middlewares/sales');
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,10 +18,14 @@ app.get('/', (_request, response) => {
 // PRODUCTS
 app.get('/products', productsController.getAll);
 app.get('/products/:id', productsController.getProduct);
+app.post('/products', productsMiddleware.validate, productsController.create);
+app.put('/products/:id', productsMiddleware.validate, productsController.update);
 
 // SALES
 app.get('/sales', salesController.getAll);
 app.get('/sales/:id', salesController.getSale);
+app.post('/sales', salesMiddleware.validate, salesController.create);
+app.put('/sales/:id', salesMiddleware.validate, salesController.update);
 
 app.listen(process.env.PORT, () => {
   console.log(`Escutando na porta ${process.env.PORT}`);

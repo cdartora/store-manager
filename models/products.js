@@ -7,6 +7,7 @@ const getAll = async () => {
     );
     return query;
   } catch (err) {
+    console.error(err.message);
     throw new Error(err.message);
   }
 };

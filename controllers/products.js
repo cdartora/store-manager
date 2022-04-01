@@ -22,7 +22,17 @@ const getProduct = async (req, res) => {
   }
 };
 
+const create = async (req, res) => {
+
+};
+
+const update = async (req, res) => {
+
+};
+
 module.exports = {
   getAll,
   getProduct,
+  create,
+  update,
 };
