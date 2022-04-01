@@ -10,10 +10,12 @@ const schema = Joi.object({
     .required(),
 });
 
-const validate = async (req, res, next) => {
+const validate = async (_err, req, res, next) => {
   const { name, quantity } = req.body;
 
   const { error } = await schema.validate({ name, quantity });
+
+  if (!error) next();
 
   const { type } = error.details[0];
 
@@ -24,7 +26,6 @@ const validate = async (req, res, next) => {
     return res.status(400).send({ message: error.message });
   }
 
-  next();
 };
 
 module.exports = {

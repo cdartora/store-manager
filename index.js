@@ -6,7 +6,6 @@ const productsMiddleware = require('./middlewares/products');
 const salesController = require('./controllers/sales');
 const salesMiddleware = require('./middlewares/sales');
 
-
 const app = express();
 app.use(bodyParser.json());
 

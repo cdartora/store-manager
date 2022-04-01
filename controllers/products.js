@@ -23,11 +23,27 @@ const getProduct = async (req, res) => {
 };
 
 const create = async (req, res) => {
+  const { name, quantity } = req.body;
 
+  try {
+    const newProduct = await productsServices.create({ name, quantity });
+    res.status(201).send(newProduct);
+  } catch (err) {
+    console.error(err.message);
+    res.status(409).send({ message: 'Product already exists' });
+  }
 };
 
 const update = async (req, res) => {
-
+  const { name, quantity } = req.body;
+  const { id } = req.params;
+  try {
+    const alterProduct = await productsServices.update({ id, name, quantity });
+    res.status(200).send(alterProduct);
+  } catch (err) {
+    console.error(err.message);
+    res.status(404).send({ message: 'Product not found' });
+  }
 };
 
 module.exports = {

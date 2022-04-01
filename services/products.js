@@ -23,7 +23,35 @@ const getProduct = async (id) => {
   }
 };
 
+const create = async ({ name, quantity }) => {
+  try {
+    const product = await productsModels.isDouble(name);
+
+    if (product) return new Error();
+
+    const response = await productsModels.create({ name, quantity });
+    return response;
+  } catch (err) {
+    console.log(err.message);
+    throw new Error(err.message);
+  }
+};
+
+const update = async ({ id, name, quantity }) => {
+  try {
+    await productsModels.update({ id, name, quantity });
+    return {
+      id, name, quantity,
+    };
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err.message);
+  }
+};
+
 module.exports = {
   getAll,
   getProduct,
+  create,
+  update,
 };
