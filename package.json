@@ -9,7 +9,6 @@
     "start": "node index.js",
     "debug": "nodemon index.js",
     "lint": "eslint --no-inline-config --no-error-on-unmatched-pattern -c .eslintrc.json . --ext .js, .jsx",
-    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
