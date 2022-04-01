@@ -10,7 +10,7 @@ const schema = Joi.object({
     .required(),
 });
 
-const validate = async (_err, req, res, next) => {
+const validate = async (req, res, next) => {
   const { name, quantity } = req.body;
 
   const { error } = await schema.validate({ name, quantity });
