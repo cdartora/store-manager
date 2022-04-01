@@ -39,7 +39,46 @@ const getSale = async (id) => {
   }
 };
 
+const isDouble = async (name) => {
+  const [[double]] = await connection.execute(
+    'SELECT * FROM sales WHERE name = ?;',
+    [name],
+  );
+
+  if (double) throw new Error();
+};
+
+const create = async ({ name, quantity }) => {
+  try {
+    const [{ insertId }] = await connection.execute(
+      'INSERT INTO products (name, quantity) VALUES(?, ?);',
+      [name, quantity],
+    );
+
+    return {
+      id: insertId, name, quantity,
+    };
+  } catch (error) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+};
+
+const update = async ({ id, name, quantity }) => {
+  const product = await getProduct(id);
+  if (!product) throw new Error();
+  await connection.execute(
+    `UPDATE products
+    SET name = ?, quantity = ?
+    WHERE id = ?;`,
+    [name, quantity, id],
+  );
+};
+
 module.exports = {
   getAll,
   getSale,
+  isDouble,
+  create,
+  update,
 };
