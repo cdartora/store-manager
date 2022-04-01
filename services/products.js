@@ -36,6 +36,8 @@ const create = async ({ name, quantity }) => {
 
 const update = async ({ id, name, quantity }) => {
   try {
+    const product = await productsModels.getProduct(id);
+    if (!product) throw new Error('Product doesn\'t exists');
     await productsModels.update({ id, name, quantity });
     return {
       id, name, quantity,
@@ -47,7 +49,6 @@ const update = async ({ id, name, quantity }) => {
 
 const remove = async (id) => {
   try {
-    console.log('services');
     await productsModels.remove(id);
   } catch (err) {
     throw new Error(err.message);

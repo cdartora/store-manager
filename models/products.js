@@ -1,26 +1,18 @@
 const connection = require('./connection');
 
 const getAll = async () => {
-  try {
-    const [query] = await connection.execute(
-      'SELECT * FROM products ORDER BY id;',
-    );
-    return query;
-  } catch (err) {
-    throw new Error(err.message);
-  }
+  const [query] = await connection.execute(
+    'SELECT * FROM products ORDER BY id;',
+  );
+  return query;
 };
 
 const getProduct = async (id) => {
-  try {
-    const [[query]] = await connection.execute(
-      'SELECT * FROM products WHERE id = ?;',
-      [id],
-    );
-    return query;
-  } catch (err) {
-    throw new Error(err.message);
-  }
+  const [[query]] = await connection.execute(
+    'SELECT * FROM products WHERE id = ?;',
+    [id],
+  );
+  return query;
 };
 
 const isDouble = async (name) => {
@@ -29,27 +21,21 @@ const isDouble = async (name) => {
     [name],
   );
 
-  if (double) throw new Error();
+  if (double) throw new Error('Product already exists.');
 };
 
 const create = async ({ name, quantity }) => {
-  try {
-    const [{ insertId }] = await connection.execute(
-      'INSERT INTO products (name, quantity) VALUES(?, ?);',
-      [name, quantity],
-    );
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO products (name, quantity) VALUES(?, ?);',
+    [name, quantity],
+  );
 
-    return {
-      id: insertId, name, quantity,
-    };
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  return {
+    id: insertId, name, quantity,
+  };
 };
 
 const update = async ({ id, name, quantity }) => {
-  const product = await getProduct(id);
-  if (!product) throw new Error();
   await connection.execute(
     `UPDATE products
     SET name = ?, quantity = ?
@@ -60,12 +46,11 @@ const update = async ({ id, name, quantity }) => {
 
 const remove = async (id) => {
   try {
-    console.log('models');
     const [{ affectedRows }] = await connection.execute(
       'DELETE FROM products WHERE id = ?;',
       [id],
     );
-    if (!affectedRows) throw new Error();
+    if (!affectedRows) throw new Error('Product not found');
   } catch (err) {
     throw new Error(err.message);
   }
