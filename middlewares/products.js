@@ -15,7 +15,7 @@ const validate = async (req, res, next) => {
 
   const { error } = await schema.validate({ name, quantity });
 
-  if (!error) next();
+  if (!error) return next();
 
   const { type } = error.details[0];
 

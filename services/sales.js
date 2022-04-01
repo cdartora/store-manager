@@ -30,8 +30,14 @@ const create = async (salesList) => {
   }
 };
 
-const update = async (_salesList) => {
-
+const update = async ({ id, salesList }) => {
+  try {
+    const response = await salesModels.update({ id, salesList });
+    return response;
+  } catch (err) {
+    console.log(err.message);
+    throw new Error();
+  }
 };
 
 module.exports = {

@@ -32,8 +32,17 @@ const create = async (req, res) => {
   }
 };
 
-const update = async (_req, _res) => {
-
+const update = async (req, res) => {
+  const salesList = req.body;
+  const { id } = req.params;
+  try {
+    const alterSale = await salesServices.update({ id, salesList });
+    console.log(alterSale);
+    res.status(200).send(alterSale);
+  } catch (err) {
+    console.error(err.message);
+    res.status(404).send({ message: 'Sale not found' });
+  }
 };
 
 module.exports = {

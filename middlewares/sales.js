@@ -12,10 +12,10 @@ const schema = Joi.object({
 
 const validate = async (req, res, next) => {
   const [body] = req.body;
-  const { quantity, productId } = body;
+  const { productId, quantity } = body;
   const { error } = await schema.validate({ quantity, productId });
 
-  if (!error) next();
+  if (!error) return next();
 
   const { type } = error.details[0];
 

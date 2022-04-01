@@ -62,13 +62,13 @@ const create = async (salesList) => {
     [getDate()],
   );
 
-  salesList.forEach(async ({ productId, quantity }) => {
-    await connection.execute(
-      `INSERT INTO sales_products (sale_id, product_id, quantity)
-        VALUES(?, ?, ?);`,
-      [insertId, productId, quantity],
-    );
-  });
+  const promises = salesList.map(({ productId, quantity }) => connection.execute(
+    `INSERT INTO sales_products (sale_id, product_id, quantity)
+    VALUES(?, ?, ?);`,
+    [insertId, productId, quantity],
+  ));
+
+  await Promise.all(promises);
 
   return {
     id: insertId,
@@ -76,15 +76,24 @@ const create = async (salesList) => {
   };
 };
 
-const update = async ({ id, name, quantity }) => {
-  const product = await getSale(id);
-  if (!product) throw new Error();
-  await connection.execute(
-    `UPDATE products
-    SET name = ?, quantity = ?
-    WHERE id = ?;`,
-    [name, quantity, id],
-  );
+const update = async ({ id, salesList }) => {
+  const sale = await getSale(id);
+  console.log(sale);
+  if (!sale) throw new Error();
+
+  const promises = salesList.map(({ productId, quantity }) => connection.execute(
+    `UPDATE sales_products
+      SET product_id = ?, quantity = ?
+      WHERE sale_id = ? AND product_id = ?;`,
+    [productId, quantity, id, productId],
+  ));
+
+  await Promise.all(promises);
+
+  return {
+    saleId: id,
+    itemUpdated: salesList,
+  };
 };
 
 module.exports = {
