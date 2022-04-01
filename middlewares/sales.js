@@ -15,6 +15,8 @@ const validate = async (req, res, next) => {
   const { quantity, productId } = body;
   const { error } = await schema.validate({ quantity, productId });
 
+  if (!error) next();
+
   const { type } = error.details[0];
 
   if (error) {
@@ -23,8 +25,6 @@ const validate = async (req, res, next) => {
     }
     return res.status(400).send({ message: error.message });
   }
-
-  next();
 };
 
 module.exports = {

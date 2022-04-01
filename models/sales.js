@@ -48,24 +48,36 @@ const isDouble = async (name) => {
   if (double) throw new Error();
 };
 
-const create = async ({ name, quantity }) => {
-  try {
-    const [{ insertId }] = await connection.execute(
-      'INSERT INTO products (name, quantity) VALUES(?, ?);',
-      [name, quantity],
-    );
+const getDate = () => {
+  const today = new Date();
+  const date = `${today.getFullYear()}-${(today.getMonth() + 1)}-${today.getDate()}`;
+  const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+  const dateTime = `${date} ${time}`;
+  return dateTime;
+};
 
-    return {
-      id: insertId, name, quantity,
-    };
-  } catch (error) {
-    console.error(error.message);
-    throw new Error(error.message);
-  }
+const create = async (salesList) => {
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO sales (date) VALUES(?);',
+    [getDate()],
+  );
+
+  salesList.forEach(async ({ productId, quantity }) => {
+    await connection.execute(
+      `INSERT INTO sales_products (sale_id, product_id, quantity)
+        VALUES(?, ?, ?);`,
+      [insertId, productId, quantity],
+    );
+  });
+
+  return {
+    id: insertId,
+    itemsSold: salesList,
+  };
 };
 
 const update = async ({ id, name, quantity }) => {
-  const product = await getProduct(id);
+  const product = await getSale(id);
   if (!product) throw new Error();
   await connection.execute(
     `UPDATE products

@@ -22,10 +22,17 @@ const getSale = async (req, res) => {
 };
 
 const create = async (req, res) => {
+  const salesList = req.body;
 
+  try {
+    const response = await salesServices.create(salesList);
+    res.status(201).send(response);
+  } catch (err) {
+    res.status(500).send({ message: 'Oops something went bad...' });
+  }
 };
 
-const update = async (req, res) => {
+const update = async (_req, _res) => {
 
 };
 

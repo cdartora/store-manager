@@ -7,7 +7,6 @@ const getAll = async () => {
     );
     return query;
   } catch (err) {
-    console.error(err.message);
     throw new Error(err.message);
   }
 };
@@ -20,7 +19,6 @@ const getProduct = async (id) => {
     );
     return query;
   } catch (err) {
-    console.error(err.message);
     throw new Error(err.message);
   }
 };
@@ -45,7 +43,6 @@ const create = async ({ name, quantity }) => {
       id: insertId, name, quantity,
     };
   } catch (error) {
-    console.error(error.message);
     throw new Error(error.message);
   }
 };
@@ -61,10 +58,24 @@ const update = async ({ id, name, quantity }) => {
   );
 };
 
+const remove = async (id) => {
+  try {
+    console.log('models');
+    const [{ affectedRows }] = await connection.execute(
+      'DELETE FROM products WHERE id = ?;',
+      [id],
+    );
+    if (!affectedRows) throw new Error();
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 module.exports = {
   getAll,
   getProduct,
   isDouble,
   create,
   update,
+  remove,
 };

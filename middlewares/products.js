@@ -25,7 +25,6 @@ const validate = async (_err, req, res, next) => {
     }
     return res.status(400).send({ message: error.message });
   }
-
 };
 
 module.exports = {

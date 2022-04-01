@@ -21,7 +21,22 @@ const getSale = async (id) => {
   }
 };
 
+const create = async (salesList) => {
+  try {
+    const response = await salesModels.create(salesList);
+    return response;
+  } catch (err) {
+    throw new Error();
+  }
+};
+
+const update = async (_salesList) => {
+
+};
+
 module.exports = {
   getAll,
   getSale,
+  create,
+  update,
 };

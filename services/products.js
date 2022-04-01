@@ -3,7 +3,6 @@ const productsModels = require('../models/products');
 const getAll = async () => {
   try {
     const query = await productsModels.getAll();
-    console.log(query);
     return query;
   } catch (err) {
     throw new Error(err.message);
@@ -18,7 +17,6 @@ const getProduct = async (id) => {
     if (!response) throw new Error();
     return response;
   } catch (err) {
-    console.error(err.message);
     throw new Error(err.message);
   }
 };
@@ -32,7 +30,6 @@ const create = async ({ name, quantity }) => {
     const response = await productsModels.create({ name, quantity });
     return response;
   } catch (err) {
-    console.log(err.message);
     throw new Error(err.message);
   }
 };
@@ -44,7 +41,15 @@ const update = async ({ id, name, quantity }) => {
       id, name, quantity,
     };
   } catch (err) {
-    console.error(err.message);
+    throw new Error(err.message);
+  }
+};
+
+const remove = async (id) => {
+  try {
+    console.log('services');
+    await productsModels.remove(id);
+  } catch (err) {
     throw new Error(err.message);
   }
 };
@@ -54,4 +59,5 @@ module.exports = {
   getProduct,
   create,
   update,
+  remove,
 };
