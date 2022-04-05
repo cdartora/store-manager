@@ -1,31 +1,23 @@
 const productsModels = require('../models/products');
 
 const getAll = async () => {
-  try {
-    const query = await productsModels.getAll();
-    return query;
-  } catch (err) {
-    throw new Error(err.message);
-  }
+  const query = await productsModels.getAll();
+  return query;
 };
 
 const getProduct = async (id) => {
-  if (typeof id < 0) return null;
+  if (id < 0) return null;
 
-  try {
-    const response = await productsModels.getProduct(id);
-    if (!response) throw new Error();
-    return response;
-  } catch (err) {
-    throw new Error(err.message);
-  }
+  const response = await productsModels.getProduct(id);
+  if (!response) throw new Error('Product not found.');
+  return response;
 };
 
 const create = async ({ name, quantity }) => {
   try {
     const product = await productsModels.isDouble(name);
 
-    if (product) return new Error();
+    if (product) throw new Error('Product already exists.');
 
     const response = await productsModels.create({ name, quantity });
     return response;

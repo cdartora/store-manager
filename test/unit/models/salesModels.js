@@ -2,11 +2,9 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const {
   getAll,
-  getProduct,
   isDouble,
   create,
   update,
-  remove,
   getSale,
 } = require('../../../models/sales');
 const connection = require('../../../models/connection');
@@ -127,12 +125,9 @@ describe('Cria uma venda no banco de dados', () => {
 
   it('Retorna o objeto do produto criado', async () => {
     sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
-    const response = await create({
-      date: 'date',
-      salesList: [
-        { productId: 1, quantity: 15 },
-      ],
-    });
+    const response = await create([
+      { productId: 1, quantity: 15 },
+    ]);
     expect(response).to.be.deep.eq({
       id: 1,
       itemsSold: [

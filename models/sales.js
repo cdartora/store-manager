@@ -2,7 +2,7 @@ const connection = require('./connection');
 
 const getAll = async () => {
   const [query] = await connection.execute(
-    `SELECT sale_id, date, product_id, quantity FROM StoreManager.sales s
+    `SELECT sale_id as saleId, date, product_id as productId, quantity FROM StoreManager.sales s
       INNER JOIN StoreManager.sales_products sp
       ON sale_id = id
       ORDER BY sp.sale_id, sp.product_id;`,
@@ -11,24 +11,18 @@ const getAll = async () => {
 };
 
 const getSale = async (id) => {
-  try {
-    const [query] = await connection.execute(
-      `SELECT date, product_id, quantity FROM StoreManager.sales s
+  const [query] = await connection.execute(
+    `SELECT date, product_id AS productId, quantity FROM StoreManager.sales s
       INNER JOIN StoreManager.sales_products sp
       ON sale_id = id
       WHERE sale_id = ?
       ORDER BY sp.sale_id, sp.product_id;`,
-      [id],
-    );
-    if (query.length === 0) {
-      console.log('entrou no if');
-      throw new Error('Sale not found.');
-    }
-    return query;
-  } catch (err) {
-    console.error(err.message);
-    throw new Error(err.message);
+    [id],
+  );
+  if (query.length === 0) {
+    throw new Error('Sale not found.');
   }
+  return query;
 };
 
 const isDouble = async (name) => {
@@ -40,10 +34,9 @@ const isDouble = async (name) => {
   if (double) throw new Error('Sale already exists.');
 };
 
-const create = async ({ date, salesList }) => {
+const create = async (salesList) => {
   const [{ insertId }] = await connection.execute(
-    'INSERT INTO sales (date) VALUES(?);',
-    [date],
+    'INSERT INTO sales (date) VALUES(NOW());',
   );
 
   const promises = salesList.map(({ productId, quantity }) => connection.execute(
