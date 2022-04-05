@@ -35,6 +35,7 @@ app.get('/sales', salesController.getAll);
 app.get('/sales/:id', salesController.getSale);
 app.post('/sales', salesMiddleware.validate, salesController.create);
 app.put('/sales/:id', salesMiddleware.validate, salesController.update);
+app.delete('/sales/:id', salesController.remove);
 
 app.listen(process.env.PORT, () => {
   console.log(`Escutando na porta ${process.env.PORT}`);

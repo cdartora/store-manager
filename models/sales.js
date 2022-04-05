@@ -64,10 +64,27 @@ const update = async ({ id, salesList }) => {
   await Promise.all(promises);
 };
 
+const remove = async (id) => {
+  try {
+    const [{ affectedRows: sales }] = await connection.execute(
+      'DELETE FROM sales WHERE id = ?;',
+      [id],
+    );
+    await connection.execute(
+      'DELETE FROM sales_products WHERE sale_id = ?;',
+      [id],
+    );
+    if (!sales) throw new Error('Product not found');
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 module.exports = {
   getAll,
   getSale,
   isDouble,
   create,
   update,
+  remove,
 };

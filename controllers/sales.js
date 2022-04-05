@@ -45,9 +45,20 @@ const update = async (req, res) => {
   }
 };
 
+const remove = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await salesServices.remove(id);
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(404).send({ message: 'Sale not found' });
+  }
+};
+
 module.exports = {
   getAll,
   getSale,
   create,
   update,
+  remove,
 };
