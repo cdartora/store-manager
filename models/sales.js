@@ -39,13 +39,18 @@ const create = async (salesList) => {
     'INSERT INTO sales (date) VALUES(NOW());',
   );
 
-  const promises = salesList.map(({ productId, quantity }) => connection.execute(
+  const insertPromises = salesList.map(({ productId, quantity }) => connection.execute(
     `INSERT INTO sales_products (sale_id, product_id, quantity)
     VALUES(?, ?, ?);`,
     [insertId, productId, quantity],
   ));
+  await Promise.all(insertPromises);
 
-  await Promise.all(promises);
+  const productPromises = salesList.map(({ productId, quantity }) => connection.execute(
+    'UPDATE products SET quantity = (quantity - ?) WHERE id = ?;',
+    [quantity, productId],
+  ));
+  await Promise.all(productPromises);
 
   return {
     id: insertId,
@@ -65,19 +70,28 @@ const update = async ({ id, salesList }) => {
 };
 
 const remove = async (id) => {
-  try {
-    const [{ affectedRows: sales }] = await connection.execute(
-      'DELETE FROM sales WHERE id = ?;',
-      [id],
-    );
-    await connection.execute(
-      'DELETE FROM sales_products WHERE sale_id = ?;',
-      [id],
-    );
-    if (!sales) throw new Error('Product not found');
-  } catch (err) {
-    throw new Error(err.message);
-  }
+  const [salesDetails] = await connection.execute(
+    `SELECT product_id productId, quantity FROM sales_products
+    WHERE sale_id = ?;`, [id],
+  );
+
+  const [{ affectedRows: sales }] = await connection.execute(
+    'DELETE FROM sales WHERE id = ?;',
+    [id],
+  );
+
+  await connection.execute(
+    'DELETE FROM sales_products WHERE sale_id = ?;',
+    [id],
+  );
+  if (!sales) throw new Error('Product not found');
+
+  const productPromises = salesDetails.map(({ productId, quantity }) => connection.execute(
+    'UPDATE products SET quantity = (quantity + ?) WHERE id = ?;',
+    [quantity, productId],
+  ));
+
+  await Promise.all(productPromises);
 };
 
 module.exports = {

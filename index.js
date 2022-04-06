@@ -14,15 +14,6 @@ app.get('/', (_request, response) => {
   response.send();
 });
 
-const log = (req, _res, next) => {
-  console.log('Body: ', req.body);
-  console.log('Método: ', req.method);
-  console.log('Request URL:', req.originalUrl);
-  next();
-};
-
-app.use(log);
-
 // PRODUCTS
 app.get('/products', productsController.getAll);
 app.get('/products/:id', productsController.getProduct);

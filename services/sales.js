@@ -26,6 +26,8 @@ const create = async (salesList) => {
     const response = await salesModels.create(salesList);
     return response;
   } catch (err) {
+    console.log('erro na camada service');
+    console.log(err.message);
     throw new Error();
   }
 };

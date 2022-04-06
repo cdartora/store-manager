@@ -26,6 +26,7 @@ const create = async (req, res) => {
 
   try {
     const response = await salesServices.create(salesList);
+    console.log('response', response);
     res.status(201).send(response);
   } catch (err) {
     res.status(500).send({ message: 'Oops something went bad...' });
