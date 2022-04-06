@@ -1,4 +1,5 @@
 const salesModels = require('../models/sales');
+const productsModels = require('../models/products');
 
 const getAll = async () => {
   try {
@@ -16,18 +17,24 @@ const getSale = async (id) => {
     const response = await salesModels.getSale(id);
     return response;
   } catch (err) {
-    console.error(err.message);
     throw new Error(err.message);
   }
 };
 
 const create = async (salesList) => {
   try {
-    const response = await salesModels.create(salesList);
+    let response;
+    await salesList.map(async ({ quantity, productId }) => {
+      const product = await productsModels.getProduct(productId);
+      console.log('-------------------product------------', product);
+      if (product.quantity > quantity) {
+        response = await salesModels.create(salesList);
+      }
+    });
+    console.log('-------passa da condicional------');
     return response;
   } catch (err) {
-    console.log('erro na camada service');
-    console.log(err.message);
+    console.log('--erro camada service--');
     throw new Error();
   }
 };
@@ -43,7 +50,6 @@ const update = async ({ id, salesList }) => {
       itemUpdated: salesList,
     };
   } catch (err) {
-    console.log(err.message);
     throw new Error();
   }
 };

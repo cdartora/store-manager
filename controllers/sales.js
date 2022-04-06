@@ -5,7 +5,6 @@ const getAll = async (_req, res) => {
     const sales = await salesServices.getAll();
     res.status(200).send(sales);
   } catch (err) {
-    console.error(err.message);
     res.status(500).send({ message: 'Ops! Something went bad...' });
   }
 };
@@ -16,7 +15,6 @@ const getSale = async (req, res) => {
     const sale = await salesServices.getSale(id);
     res.status(200).send(sale);
   } catch (err) {
-    console.error(err.message);
     res.status(404).send({ message: 'Sale not found' });
   }
 };
@@ -26,10 +24,11 @@ const create = async (req, res) => {
 
   try {
     const response = await salesServices.create(salesList);
-    console.log('response', response);
+    console.log(typeof response);
+    if (!response) return res.status(422).send({ message: 'Such amount is not permitted to sell' });
     res.status(201).send(response);
   } catch (err) {
-    res.status(500).send({ message: 'Oops something went bad...' });
+    res.status(500).send({ message: 'Ops! Something went bad...' });
   }
 };
 
@@ -38,10 +37,8 @@ const update = async (req, res) => {
   const { id } = req.params;
   try {
     const alterSale = await salesServices.update({ id, salesList });
-    console.log(alterSale);
     res.status(200).send(alterSale);
   } catch (err) {
-    console.error(err.message);
     res.status(404).send({ message: 'Sale not found' });
   }
 };

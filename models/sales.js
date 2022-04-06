@@ -35,27 +35,18 @@ const isDouble = async (name) => {
 };
 
 const create = async (salesList) => {
-  const [{ insertId }] = await connection.execute(
-    'INSERT INTO sales (date) VALUES(NOW());',
-  );
-
+  const [{ insertId }] = await connection.execute('INSERT INTO sales (date) VALUES(NOW());');
   const insertPromises = salesList.map(({ productId, quantity }) => connection.execute(
-    `INSERT INTO sales_products (sale_id, product_id, quantity)
-    VALUES(?, ?, ?);`,
+    'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES(?, ?, ?);',
     [insertId, productId, quantity],
   ));
   await Promise.all(insertPromises);
-
   const productPromises = salesList.map(({ productId, quantity }) => connection.execute(
     'UPDATE products SET quantity = (quantity - ?) WHERE id = ?;',
     [quantity, productId],
   ));
   await Promise.all(productPromises);
-
-  return {
-    id: insertId,
-    itemsSold: salesList,
-  };
+  return { id: insertId, itemsSold: salesList };
 };
 
 const update = async ({ id, salesList }) => {
