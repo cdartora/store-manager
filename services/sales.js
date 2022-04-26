@@ -23,18 +23,18 @@ const getSale = async (id) => {
 
 const create = async (salesList) => {
   try {
-    let response;
+    let haveStock;
+
     await salesList.map(async ({ quantity, productId }) => {
       const product = await productsModels.getProduct(productId);
-      console.log('-------------------product------------', product);
-      if (product.quantity > quantity) {
-        response = await salesModels.create(salesList);
-      }
+      if (product.quantity < quantity) haveStock = false;
     });
-    console.log('-------passa da condicional------');
-    return response;
+
+    if (haveStock) {
+      const response = await salesModels.create(salesList);
+      return response;
+    }
   } catch (err) {
-    console.log('--erro camada service--');
     throw new Error();
   }
 };

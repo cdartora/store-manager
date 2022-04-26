@@ -40,12 +40,12 @@ const create = async (salesList) => {
     'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES(?, ?, ?);',
     [insertId, productId, quantity],
   ));
-  await Promise.all(insertPromises);
+  await Promise.all(insertPromises).catch(({ message }) => console.log(message));
   const productPromises = salesList.map(({ productId, quantity }) => connection.execute(
     'UPDATE products SET quantity = (quantity - ?) WHERE id = ?;',
     [quantity, productId],
   ));
-  await Promise.all(productPromises);
+  await Promise.all(productPromises).catch((err) => console.log(err.message));
   return { id: insertId, itemsSold: salesList };
 };
 
